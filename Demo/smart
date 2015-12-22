@@ -1,0 +1,19 @@
+# -*- makefile-gmake -*-
+PROGRAM := Demo
+SOURCES := Demo.cpp
+
+INCLUDES += \
+  $(CURDIR)/include \
+  /open/cg/assimp/include \
+  /open/gaming/glfw/include \
+  /open/gaming/glfw/deps \
+
+REQUIRES := ORL
+
+RunDemo: \
+  $(SRCDIR)/$(PROGRAM) \
+  $(SRCDIR)/Demo.obj \
+  $(SRCDIR)/Demo.mtl \
+  $(SRCDIR)/Demo.vs \
+  $(SRCDIR)/Demo.fs
+	cd $(<D) && ./$(<F) Demo.obj Demo.vs Demo.fs

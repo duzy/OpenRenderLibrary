@@ -1,0 +1,5 @@
+*~
+*.o
+*.d
+/ORL/libORL.a
+/Demo/Demo

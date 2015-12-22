@@ -1,0 +1,28 @@
+# -*- makefile-gmake -*-
+LIBRARY := libORL.a
+
+SOURCES := Scene.cpp Mesh.cpp Shader.cpp \
+  internal/Driver.cpp internal/Console.cpp \
+  internal/ext/stb_image_aug.c \
+  internal/ext/image_DXT.c \
+  internal/ext/image_helper.c \
+  internal/ext/SOIL.c \
+
+INCLUDES += \
+  $(dirname $(SRCDIR))include \
+  /open/cg/assimp/include \
+  /open/gaming/glfw/include \
+  /open/gaming/glfw/deps \
+
+DEFINES += -DSTBI_NO_DDS
+
+CXXFLAGS += -std=c++11 -std=c++1y -g -ggdb
+
+EXPORT.CXXFLAGS := -std=c++11 -std=c++1y
+EXPORT.LDFLAGS := -L/open/cg/assimp/lib -L/open/gaming/glfw/src
+EXPORT.LOADLIBS := $(SRCDIR)/libORL.a \
+  -lassimp -lglfw3 \
+  -lX11 -lXrandr -lXinerama -lXi -lXxf86vm -lXcursor -lGLESv2 \
+  -lpthread -ldl
+
+#EXPORT.LDLIBS
