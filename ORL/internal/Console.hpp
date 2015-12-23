@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  ORL 0.00 - https://github.com/duzy/ORL
+ *  ORL 0.00 - https://github.com/duzy/OpenRenderLibrary
  *  Open Render Library, a library for rendering 3D models.
  *------------------------------------------------------------------------------
  *  Copyright (c) 2015 Duzy Chan <code@duzy.info>
