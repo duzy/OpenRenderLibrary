@@ -9,6 +9,7 @@
 #include "ORL/Mesh.hpp"
 #include "internal/Console.hpp"
 #include "internal/Driver.hpp"
+#include <cstring>
 
 /* This must be corresponding to ORL::TextureType, change correspondingly!
  */
@@ -78,14 +79,20 @@ void Mesh::onRender(const Shader &S)
   //const auto Con = Console::get();
   const auto &GL = Driver::get();
 
-  for (unsigned i = 0; i < Textures.size(); ++i) {
+  unsigned N[unsigned(TextureType::REFLECTION) + 1];
+  std::memset(N, 0, sizeof(N));
+
+  for (unsigned i = 0, n = 0; i < Textures.size(); ++i) {
     auto const &Tex = Textures[i];
     if (Tex.Type != TextureType::NONE) {
-      auto Sym = TextureSymbolNames[unsigned(Tex.Type)];
-      auto Loc = GL.GetUniformLocation(S.GetProgram(), Sym);
-      GL.ActiveTexture(GL.TEXTURE0 + i);
-      GL.Uniform1i(Loc, i);
+      auto T = unsigned(Tex.Type);
+      auto Sym = std::string(TextureSymbolNames[T]) + char('0' + N[T]);
+      auto Loc = GL.GetUniformLocation(S.GetProgram(), Sym.c_str());
+      GL.ActiveTexture(GL.TEXTURE0 + n);
+      GL.Uniform1i(Loc, n); // Set the sampler to the correct texture unit.
       GL.BindTexture(GL.TEXTURE_2D, Tex.Name);
+      ++N[T];
+      ++n;
     }
   }
 
@@ -93,10 +100,11 @@ void Mesh::onRender(const Shader &S)
   GL.DrawElements(GL.TRIANGLES, NumIndices, GL.UNSIGNED_INT, nullptr);
   GL.BindVertexArray(0);
 
-  for (unsigned i = 0; i < Textures.size(); ++i) {
+  for (unsigned i = 0, n = 0; i < Textures.size(); ++i) {
     if (Textures[i].Type != TextureType::NONE) {
-      //GL.ActiveTexture(GL.TEXTURE0 + i);
+      GL.ActiveTexture(GL.TEXTURE0 + n);
       GL.BindTexture(GL.TEXTURE_2D, 0);
+      ++n;
     }
   }
 }

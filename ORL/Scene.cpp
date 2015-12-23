@@ -15,6 +15,7 @@
 #include <assimp/postprocess.h>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 #include <map>
 
 namespace
@@ -155,13 +156,18 @@ namespace
       GL.GenTextures(1, &TextureName);
       GL.BindTexture(GL.TEXTURE_2D, TextureName);
 
+      auto const Start = std::chrono::high_resolution_clock::now();
+
       int Width = 0, Height = 0;
-      unsigned Format = gamma ? unsigned(GL.SRGB) : unsigned(GL.RGB);
+      unsigned InternalFormat = gamma ? unsigned(GL.SRGB) : unsigned(GL.RGB);
       unsigned char* Image = SOIL_load_image(Filename.c_str(), &Width, &Height, 0, SOIL_LOAD_RGB);
-      GL.TexImage2D(GL.TEXTURE_2D, 0, Format, Width, Height, 0, GL.RGB, GL.UNSIGNED_BYTE, Image);
+      GL.TexImage2D(GL.TEXTURE_2D, 0, InternalFormat, Width, Height, 0, GL.RGB, GL.UNSIGNED_BYTE, Image);
       SOIL_free_image_data(Image);
 
-      Con->Debug("ModelLoader::LoadTextureFromFile: ", Filename, ", ", Width, "x", Height);
+      auto const Stop = std::chrono::high_resolution_clock::now();
+      float Duration = std::chrono::duration_cast<std::chrono::duration<float>>(Stop - Start).count();
+
+      Con->Debug("ModelLoader::LoadTextureFromFile: ", Filename, ", ", Width, "x", Height, ", ", Duration);
 
       GL.GenerateMipmap(GL.TEXTURE_2D);	
 
